@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace CityInfo.API.Controllers
 {
+    [Route("api/cities")]
+    //when doing this rotuing at controller level 
+    //there is no need to be specific in the method attributes
     public class CitiesController: Controller
     {
+        //[HttpGet("api/cities")]
+        [HttpGet()]
         public JsonResult GetCities()
         {
             return new JsonResult(new List<object>()
