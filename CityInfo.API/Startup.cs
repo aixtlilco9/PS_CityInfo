@@ -30,12 +30,14 @@ namespace CityInfo.API
             {
                 app.UseExceptionHandler();
             }
+
+            app.UseStatusCodePages();//this was added so when an error occurs it is dispalyed on browser 
             app.UseMvc();
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello Worldkfkfkf!");
-            });
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Hello Worldkfkfkf!");
+            //});
         }
     }
 }

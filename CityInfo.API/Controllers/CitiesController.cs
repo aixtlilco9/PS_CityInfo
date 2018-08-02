@@ -13,10 +13,11 @@ namespace CityInfo.API.Controllers
     {
         //[HttpGet("api/cities")]
         [HttpGet()]
-        public JsonResult GetCities()
+        public IActionResult GetCities()
         {
-            return new JsonResult(CitiesDataStore.Current.Cities);
-
+            return Ok(CitiesDataStore.Current.Cities);
+            //a not found is not necessary because even an empty collection is a valid response
+             
             //the below is for now not needed since the cities data store was created which is used to hold our city data
             //return new JsonResult(new List<object>()
             //{
@@ -26,11 +27,15 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public JsonResult GetCity(int id)
+        public IActionResult GetCity(int id)
         {
-            return new JsonResult(
-            CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id)
-            );
+            var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+            if (cityToReturn == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(cityToReturn);
         }
     }
 }
