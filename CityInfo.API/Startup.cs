@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 
 namespace CityInfo.API
 {
@@ -16,6 +17,16 @@ namespace CityInfo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+                     //the below is added to make the response from the request be formatted exactly the way it is in your class as opposed to the camelcase format..
+                     //.AddJsonOptions(o =>
+                     //{
+                     //    if (o.SerializerSettings.ContractResolver != null)
+                     //    {
+                     //        var castedResolver = o.SerializerSettings.ContractResolver
+                     //            as DefaultContractResolver;
+                     //        castedResolver.NamingStrategy = null;
+                     //    }
+                     //});
 
         }
 
