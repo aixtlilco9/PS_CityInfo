@@ -46,7 +46,8 @@ namespace CityInfo.API.Controllers
         public IActionResult CreatePointOfInterest(int cityId,
             [FromBody] PointOfInterestForCreationDto pointOfInterest)
         {
-            if(pointOfInterest == null)
+            //------basic validation below
+            if (pointOfInterest == null)
             {
                 return BadRequest();
             }
@@ -60,7 +61,8 @@ namespace CityInfo.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            //------basic validation above
+      
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
             if(city == null)
@@ -79,9 +81,56 @@ namespace CityInfo.API.Controllers
                 Name = pointOfInterest.Name,
                 Description = pointOfInterest.Description
             };
+
             city.PointsOfInterest.Add(finalPointOfInterest);
             return CreatedAtRoute("GetPointOfInterest", new
             { cityId = cityId, id = finalPointOfInterest.Id}, finalPointOfInterest);
+        }
+
+        //for full updates we use HttpPut
+        [HttpPut("{cityId}/pointsofinterest/{id}")]
+        public IActionResult UpdatePointOfInterest(int cityId, int id,
+            [FromBody] PointOfInterestForUpdateDto pointOfInterest)
+        {
+            //------basic validation below
+            if (pointOfInterest == null)
+            {//checks if the content body is null
+                return BadRequest();
+            }
+
+            if (pointOfInterest.Description == pointOfInterest.Name)
+            {
+                ModelState.AddModelError("descriptrion", "name should not be the same as description");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            //------basic validation above
+
+            //check if the city exist
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            //check if the particular pointOfInterest exist
+            var pointOfInterestToBeFullyUpdated = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
+            if(pointOfInterestToBeFullyUpdated == null)
+            {
+                return NotFound();
+            }
+
+            //http should fully update the resource meaning all values...if a value is not provided it should have a default value of what it was 
+            pointOfInterestToBeFullyUpdated.Name = pointOfInterest.Name;
+            pointOfInterestToBeFullyUpdated.Description = pointOfInterest.Description;
+
+            //for HttpPuts return NoContent() is typically used but a 200 okay
+            return NoContent();
+
+
         }
     }
 }
