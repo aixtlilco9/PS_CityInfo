@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -129,8 +130,87 @@ namespace CityInfo.API.Controllers
 
             //for HttpPuts return NoContent() is typically used but a 200 okay
             return NoContent();
+        }
 
+        [HttpPatch("{cityId}/pointsofinterest/{id}")]
+        public IActionResult PartialUpdatePointOfInterest(int cityId, int id,
+            [FromBody] JsonPatchDocument<PointOfInterestForUpdateDto> patchDoc)
+        {
+            if(patchDoc == null)
+            {
+                return BadRequest();
+            }
 
+            //----------basic validation below
+            //check if the city exist
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            //check if the particular pointOfInterest exist
+            var pointOfInterestToBeFullyUpdated = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
+            if (pointOfInterestToBeFullyUpdated == null)
+            {
+                return NotFound();
+            }
+            //----------basic validation above
+
+            var pointOfInterestToPatch =
+                new PointOfInterestForUpdateDto()
+                {
+                    Name = pointOfInterestToBeFullyUpdated.Name,
+                    Description = pointOfInterestToBeFullyUpdated.Description
+                };
+
+            patchDoc.ApplyTo(pointOfInterestToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(pointOfInterestToPatch.Name == pointOfInterestToPatch.Description)
+            {
+                ModelState.AddModelError("descriptrion", "name should not be the same as description");
+            }
+
+            TryValidateModel(pointOfInterestToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            pointOfInterestToBeFullyUpdated.Name = pointOfInterestToPatch.Name;
+            pointOfInterestToBeFullyUpdated.Description = pointOfInterestToPatch.Description;
+
+            return NoContent();
+
+        }
+
+        [HttpDelete("{cityId}/pointsofinterest/{id}")]
+        public IActionResult DeletePointOfInterest(int cityId, int id)
+        {
+            // ----------basic validation below
+            //check if the city exist
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            //check if the particular pointOfInterest exist
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+            //----------basic validation above
+
+            city.PointsOfInterest.Remove(pointOfInterestFromStore);
+            return NoContent();
         }
     }
 }
