@@ -20,6 +20,12 @@ namespace CityInfo.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+            //added this belwo for the logging
+            .ConfigureLogging(logging =>
+            {
+                logging.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+            })
+            //added the above
                 .Build();
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 
 namespace CityInfo.API
@@ -36,6 +37,9 @@ namespace CityInfo.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            //because .net core 2 does soemthing in its program class it is not necessary to add loggerfactory.addconsole(); or loggerfactory.adddebug():
+            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

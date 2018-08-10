@@ -26,7 +26,7 @@ namespace CityInfo.API.Controllers
         {
             try
             {
-                //throw new Exception("exception test to test the catch block");
+                //throw new Exception("exception test to test the catch block and logger");
                 var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
                 if (city == null)
