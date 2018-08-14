@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,18 +20,24 @@ namespace CityInfo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-                .AddMvcOptions(o => o.OutputFormatters.Add(
-                   new XmlDataContractSerializerOutputFormatter()));
-                     //the below is added to make the response from the request be formatted exactly the way it is in your class as opposed to the camelcase format..
-                     //.AddJsonOptions(o =>
-                     //{
-                     //    if (o.SerializerSettings.ContractResolver != null)
-                     //    {
-                     //        var castedResolver = o.SerializerSettings.ContractResolver
-                     //            as DefaultContractResolver;
-                     //        castedResolver.NamingStrategy = null;
-                     //    }
-                     //});
+                .AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));
+            //a.i:the below is added to make the response from the request be formatted exactly the way it is in your class as opposed to the camelcase format..
+            //.AddJsonOptions(o =>
+            //{
+            //    if (o.SerializerSettings.ContractResolver != null)
+            //    {
+            //        var castedResolver = o.SerializerSettings.ContractResolver
+            //            as DefaultContractResolver;
+            //        castedResolver.NamingStrategy = null;
+            //    }
+            //});
+            //a.i:because mailservice is lightweight and statless addtransient is a good option
+            //also using compiler directives
+#if DEBUG
+            services.AddTransient<IMailService,LocalMailService>();
+#else       
+            services.AddTransient<IMailService,CloudMailService>();
+#endif
 
         }
 

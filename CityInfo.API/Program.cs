@@ -20,7 +20,7 @@ namespace CityInfo.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-            //added this belwo for the logging
+            //added this belwo for the logging also check this out if ever needed https://github.com/NLog/NLog.Web/wiki/Getting-started-with-ASP.NET-Core-2
             .ConfigureLogging(logging =>
             {
                 logging.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
