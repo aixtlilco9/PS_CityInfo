@@ -17,6 +17,9 @@ namespace CityInfo.API.Entities
         [MaxLength(50)]
         public string Name { get; set; }
 
+        [MaxLength(200)]
+        public string Description { get; set; }
+
         [ForeignKey("CityId")]//to my belief this was added to show that if we did not want to name
         //the foreignkey in the convention base of xxxID we could add this and state wat it was 
         //the the 2 below propertes to link the two entities as pointofinterest is dependent on city 
