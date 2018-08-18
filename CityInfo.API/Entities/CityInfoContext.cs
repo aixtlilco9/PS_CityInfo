@@ -11,7 +11,10 @@ namespace CityInfo.API.Entities
         public CityInfoContext(DbContextOptions<CityInfoContext> options) : base(options)
         {
             //the line belows ensures that is the database has not been created yet , that it is created but if it has then nothing is done
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
+
+            //BY using this the migrationfiles are used to create the db and it also allows us to go back and fourth using the up and down method in them..not existing at all to initial and upcoming versions
+            Database.Migrate();
         }
         public DbSet<City> Cities { get; set; }
 
