@@ -22,7 +22,8 @@ namespace CityInfo.API.Services
         //returns a specific point of interest
         PointOfInterest GetPointOfInterest(int cityId, int PointofInterestId);
 
+        void AddPointOfInterestForCity(int cityId, PointOfInterest pointOfInterest);
 
-
+        bool Save();
     }
 }

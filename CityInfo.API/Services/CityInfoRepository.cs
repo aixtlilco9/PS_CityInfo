@@ -16,6 +16,12 @@ namespace CityInfo.API.Services
             _ctx = ctx;
         }
 
+        public void AddPointOfInterestForCity(int cityId, PointOfInterest pointOfInterest)
+        {
+            var city = GetCity(cityId, false);
+            city.PointsOfInterest.Add(pointOfInterest);
+        }
+
         public bool CityExists(int cityId)
         {
             return _ctx.Cities.Any(c => c.Id == cityId);
@@ -50,6 +56,11 @@ namespace CityInfo.API.Services
         {
             return _ctx.PointOfInterest
                             .Where(p => p.CityId == cityId).ToList();
+        }
+
+        public bool Save()
+        {
+            return (_ctx.SaveChanges() >= 0);
         }
     }
 }
