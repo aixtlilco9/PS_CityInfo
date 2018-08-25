@@ -151,23 +151,25 @@ namespace CityInfo.API.Controllers
             //------basic validation above
 
             //check if the city exist
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-            if (city == null)
+            if (!_cityInfoRepo.CityExists(cityId))
             {
                 return NotFound();
             }
 
             //check if the particular pointOfInterest exist
-            var pointOfInterestToBeFullyUpdated = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
-            if (pointOfInterestToBeFullyUpdated == null)
+            var pointOfInterestEntity = _cityInfoRepo.GetPointOfInterest(cityId,id);
+            if (pointOfInterestEntity == null)
             {
                 return NotFound();
             }
 
-            //http should fully update the resource meaning all values...if a value is not provided it should have a default value of what it was 
-            pointOfInterestToBeFullyUpdated.Name = pointOfInterest.Name;
-            pointOfInterestToBeFullyUpdated.Description = pointOfInterest.Description;
+            Mapper.Map(pointOfInterest,pointOfInterestEntity);
 
+            if (!_cityInfoRepo.Save())
+            {
+                return StatusCode(500, "A problem happend while handling your request");
+            }
+        
             //for HttpPuts return NoContent() is typically used but a 200 okay
             return NoContent();
         }
