@@ -8,6 +8,8 @@ namespace CityInfo.API.Services
 {
     public interface ICityInfoRepository
     {
+        //returns t/f if a city exist
+        bool CityExists(int cityId);
         //returns all the cities
         IEnumerable<City> GetCities();
 

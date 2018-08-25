@@ -15,6 +15,11 @@ namespace CityInfo.API.Services
         {
             _ctx = ctx;
         }
+
+        public bool CityExists(int cityId)
+        {
+            return _ctx.Cities.Any(c => c.Id == cityId);
+        }
         public IEnumerable<City> GetCities()
         {
             //calling tolist ensure the quesry is executed, calling tolist means iteration has to happen
