@@ -233,25 +233,28 @@ namespace CityInfo.API.Controllers
         {
             // ----------basic validation below
             //check if the city exist
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-            if (city == null)
+            if (!_cityInfoRepo.CityExists(cityId))
             {
                 return NotFound();
             }
 
             //check if the particular pointOfInterest exist
-            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
-            if (pointOfInterestFromStore == null)
+            var pointOfInterestEntity = _cityInfoRepo.GetPointOfInterest(cityId, id);
+            if (pointOfInterestEntity == null)
             {
                 return NotFound();
             }
             //----------basic validation above
+            _cityInfoRepo.DeletePointOfInterest(pointOfInterestEntity);
 
-            city.PointsOfInterest.Remove(pointOfInterestFromStore);
+            if (!_cityInfoRepo.Save())
+            {
+                return StatusCode(500, "a problem happend while handling your del request");
 
+            }
             //implementation of using mail service below
             _mailService.Send("Point of interest deleted.",
-                $"Point of Interest {pointOfInterestFromStore.Name} with id {pointOfInterestFromStore.Id} was deleted");
+                $"Point of Interest {pointOfInterestEntity.Name} with id {pointOfInterestEntity.Id} was deleted");
 
             return NoContent();
         }

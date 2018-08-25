@@ -26,6 +26,12 @@ namespace CityInfo.API.Services
         {
             return _ctx.Cities.Any(c => c.Id == cityId);
         }
+
+        public void DeletePointOfInterest(PointOfInterest pointOfInterest)
+        {
+            _ctx.PointOfInterest.Remove(pointOfInterest);
+        }
+
         public IEnumerable<City> GetCities()
         {
             //calling tolist ensure the quesry is executed, calling tolist means iteration has to happen
