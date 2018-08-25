@@ -75,6 +75,13 @@ namespace CityInfo.API
             }
 
             app.UseStatusCodePages();//this was added so when an error occurs it is dispalyed on browser 
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Entities.City,Models.CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<Entities.City, Models.CityDto>();
+                cfg.CreateMap<Entities.PointOfInterest, Models.PointOfInterestDto>();
+
+            });
             app.UseMvc();
 
             //app.Run(async (context) =>
